@@ -1,8 +1,9 @@
 var btn = document.getElementById("play");
 
 function transform() {
-   data.splice(5, 1);
-   var editedArray = deleteIdField(data);
+   arrToEdit = data.slice();
+   arrToEdit.splice(5, 1);
+   var editedArray = deleteIdField(arrToEdit);
    editingFields(editedArray);
    var resultArray = editedArray.filter(function (car) {
       return car.isVisible === true;
@@ -11,7 +12,7 @@ function transform() {
 }
 
 function editingFields(initialList) {
-   initialList.map(function (car) {
+   initialList.forEach(function (car) {
       car.name = transformName(car.name);
       car.url = editUrl(car.url);
       car.description = editDescription(car.description);
@@ -22,15 +23,16 @@ function editingFields(initialList) {
 }
 
 function transformDate(date) {
-   var tmpDate = new Date(date);
-   var resultDate = tmpDate.getFullYear() + "/" +
-      tmpDate.getMonth() + "/" + tmpDate.getDate() + " " +
-      tmpDate.getHours() + ":" + tmpDate.getMinutes();
+   var tmpDate = moment(date); //  
+   var resultDate = tmpDate.format('YYYY/DD/MM H:mm:ss');
    return resultDate;
 }
 
 function editDescription(description) {
-   description = description.slice(0, 15) + '...';
+   if (description.length < 15) {
+      return description;
+   } else
+      description = description.slice(0, 15) + '...';
    return description;
 }
 
@@ -41,16 +43,14 @@ function editUrl(url) {
 function transformName(name) {
    var charArray = [];
    var result = name.toLowerCase();
-
    charArray = result.split('');
    charArray[0] = charArray[0].toUpperCase();
-   result = charArray.join().replace(/,\s?/g, "");;
    return result;
 }
 
-function deleteIdField(data) {
+function deleteIdField(input) {
    var resArray = [];
-   data.forEach(function (item, index) {
+   input.forEach(function (item, index) {
       resArray.push({
          date: item.date,
          name: item.name,
